@@ -1,5 +1,6 @@
 package ui
 
+import utility.ImageUtils
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -7,9 +8,13 @@ import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.io.File
+import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
+import javax.swing.JFileChooser
+
+
 
 /**
  *
@@ -20,7 +25,8 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     private var thresholdOneValue: Int = 50,
                     private var thresholdTwoValue: Int = 150,
                     private var kernelSize: Int = 3,
-                    private val topLevelPanel: JPanel = JPanel(BorderLayout())) : JFrame() {
+                    private val topLevelPanel: JPanel = JPanel(BorderLayout()),
+                    private val displayPanel: JPanel = JPanel()) : JFrame() {
 
     init
     {
@@ -58,9 +64,14 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
     private fun createImageDisplayPanel()
     {
-        val displayPanel = JPanel()
         displayPanel.background = Color.BLUE
         topLevelPanel.add(displayPanel, BorderLayout.CENTER)
+    }
+
+    private fun setMainImage(fileOfImage: File)
+    {
+        val img = ImageIO.read(fileOfImage)
+        displayPanel.add(ImageUtils.getImageFromFile(img))
     }
 
     private fun createFrame(frameTitle: String = "Edge Detection")
@@ -118,6 +129,8 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
     inner class HandleMenuChange(val panel: JPanel): ActionListener
     {
+        private val defaultFileLocation = """C:\git\EdgeDetection\trainingData"""
+
         override fun actionPerformed(p0: ActionEvent?)
         {
             if (p0?.actionCommand.equals("Load Image"))
@@ -125,13 +138,22 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                 System.err.println("Lets choose a file!")
                 //Create a file chooser
                 val fileChooser = JFileChooser();
-                fileChooser.currentDirectory = File("""C:\git\EdgeDetection\trainingData""")
-                val path = fileChooser.showOpenDialog(panel)
-                System.err.println("Going to load in image $path")
+                fileChooser.currentDirectory = File(defaultFileLocation)
+                val returnVal = fileChooser.showOpenDialog(parent)
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println("You chose to open this file: " + fileChooser.selectedFile.absoluteFile)
+                }
+                setMainImage(fileChooser.selectedFile.absoluteFile)
+                revalidate()
+                repaint()
             }
             else if (p0?.actionCommand.equals("Save Image"))
             {
 
+            }
+            else
+            {
+                //TODO LOGGER
             }
         }
     }

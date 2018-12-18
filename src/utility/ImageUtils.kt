@@ -90,7 +90,7 @@ object ImageUtils{
         return greyImage
     }
 
-    fun displayImage(img: BufferedImage) : JLabel
+    fun getImageFromFile(img: BufferedImage) : JLabel
     {
         return JLabel(ImageIcon(img))
     }
