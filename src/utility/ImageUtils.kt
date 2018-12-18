@@ -12,7 +12,7 @@ import java.awt.image.DataBufferByte
 /**
  * Utility class for image manipulation
  */
-object ReadImage{
+object ImageUtils{
 
     /**
      * Converts a BufferedImage into an open CV matrix object. Modified from
@@ -90,20 +90,9 @@ object ReadImage{
         return greyImage
     }
 
-    /**
-     * Displays an image in a JFrame.
-     */
-    fun displayImage(img: BufferedImage)
+    fun displayImage(img: BufferedImage) : JLabel
     {
-        val frame = JFrame()
-        frame.layout = BorderLayout()
-
-        val panel = JPanel()
-        frame.add(panel)
-        panel.add(JLabel(ImageIcon(img)))
-
-        frame.pack()
-        frame.isVisible = true
+        return JLabel(ImageIcon(img))
     }
 
 }

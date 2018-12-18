@@ -1,29 +1,26 @@
 package ui
 
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
-import javax.swing.JComboBox
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JMenu
-import javax.swing.JMenuBar
-import javax.swing.JMenuItem
-import javax.swing.JPanel
-import javax.swing.JSlider
+import java.io.File
+import javax.swing.*
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 
 /**
  *
  */
-class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
-                   private val thresholdTwoSlider: JSlider = JSlider(),
-                   private val kernelComboBox: JComboBox<Int> = JComboBox(arrayOf(3, 5, 9, 12)),
-                   private var thresholdOneValue: Int = 50,
-                   private var thresholdTwoValue: Int = 150,
-                   private var kernelSize: Int = 3,
-                   private val topLevelPanel: JPanel = JPanel(BorderLayout())) : JFrame() {
+class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
+                    private val thresholdTwoSlider: JSlider = JSlider(),
+                    private val kernelComboBox: JComboBox<Int> = JComboBox(arrayOf(3, 5, 9, 12)),
+                    private var thresholdOneValue: Int = 50,
+                    private var thresholdTwoValue: Int = 150,
+                    private var kernelSize: Int = 3,
+                    private val topLevelPanel: JPanel = JPanel(BorderLayout())) : JFrame() {
 
     init
     {
@@ -80,6 +77,8 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
         val saveMenuItem = JMenuItem("Save Image")
         fileMenu.add(loadMenuItem)
         fileMenu.add(saveMenuItem)
+        loadMenuItem.addActionListener(HandleMenuChange(topLevelPanel))
+        saveMenuItem.addActionListener(HandleMenuChange(topLevelPanel))
         jMenuBar = operationsMenuBar
     }
 
@@ -109,8 +108,30 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
             if (source is JComboBox<*> && source.selectedItem is Int)
             {
                 kernelSize = source.selectedItem as Int
-            } else {
+            }
+            else
+            {
                 //TODO LOGGER something has gone wrong
+            }
+        }
+    }
+
+    inner class HandleMenuChange(val panel: JPanel): ActionListener
+    {
+        override fun actionPerformed(p0: ActionEvent?)
+        {
+            if (p0?.actionCommand.equals("Load Image"))
+            {
+                System.err.println("Lets choose a file!")
+                //Create a file chooser
+                val fileChooser = JFileChooser();
+                fileChooser.currentDirectory = File("""C:\git\EdgeDetection\trainingData""")
+                val path = fileChooser.showOpenDialog(panel)
+                System.err.println("Going to load in image $path")
+            }
+            else if (p0?.actionCommand.equals("Save Image"))
+            {
+
             }
         }
     }
