@@ -14,11 +14,6 @@ import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 import javax.swing.JFileChooser
 
-
-
-/**
- *
- */
 class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     private val thresholdTwoSlider: JSlider = JSlider(),
                     private val kernelComboBox: JComboBox<Int> = JComboBox(arrayOf(3, 5, 9, 12)),
@@ -71,6 +66,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
     private fun setMainImage(fileOfImage: File)
     {
         val img = ImageIO.read(fileOfImage)
+        displayPanel.removeAll()
         displayPanel.add(ImageUtils.getImageFromFile(img))
     }
 
