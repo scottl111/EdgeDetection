@@ -1,7 +1,12 @@
 package ui
 
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.GridLayout
 import javax.swing.*
+import javax.swing.event.ChangeEvent
+import javax.swing.event.ChangeListener
 
 /**
  *
@@ -27,6 +32,9 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
         val adjustmentPanel = JPanel(GridLayout(2, 3, 5, 5))
         topLevelPanel.add(adjustmentPanel, BorderLayout.NORTH)
         adjustmentPanel.background = Color.YELLOW
+
+        thresholdOneSlider.addChangeListener(HandleSliderChange())
+        thresholdTwoSlider.addChangeListener(HandleSliderChange())
 
         adjustmentPanel.add(JLabel("Threshold Slider 1", JLabel.CENTER))
         adjustmentPanel.add(JLabel("Kernel Size", JLabel.CENTER))
@@ -59,8 +67,21 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
         fileMenu.add(saveMenuItem)
         fileMenu.add(loadMenuItem)
         jMenuBar = operationsMenuBar
+
         validate()
         repaint()
     }
 
+    class HandleSliderChange: ChangeListener {
+
+        override fun stateChanged(p0: ChangeEvent?)
+        {
+            val source = p0?.source
+            if (source is JSlider)
+            {
+                System.err.println(source.value)
+            }
+        }
+
+    }
 }
