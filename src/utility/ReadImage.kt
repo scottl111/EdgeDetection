@@ -1,3 +1,5 @@
+package utility
+
 import org.opencv.core.Mat
 import java.awt.BorderLayout
 import java.awt.image.BufferedImage

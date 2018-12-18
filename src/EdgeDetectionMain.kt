@@ -27,9 +27,9 @@ class EdgeDetectionMain {
 //            Imgproc.Canny(grey, wide, 50.0, 150.0, 3, false)
 //            wide.convertTo(draw, CvType.CV_8U)
 //
-//            ReadImage.displayImage(ReadImage.convertMatrixToImage(draw))
-//            ReadImage.displayImage(ReadImage.convertMatrixToImage(colourMat))
-//            ReadImage.displayImage(ReadImage.convertMatrixToImage(grey))
+//            utility.ReadImage.displayImage(utility.ReadImage.convertMatrixToImage(draw))
+//            utility.ReadImage.displayImage(utility.ReadImage.convertMatrixToImage(colourMat))
+//            utility.ReadImage.displayImage(utility.ReadImage.convertMatrixToImage(grey))
 //
 //            if (Imgcodecs.imwrite(trainingDataPath + "4.jpg", draw)){
 //                System.err.println("Edge is detecting............")
