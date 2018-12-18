@@ -4,7 +4,14 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridLayout
-import javax.swing.*
+import javax.swing.JComboBox
+import javax.swing.JFrame
+import javax.swing.JLabel
+import javax.swing.JMenu
+import javax.swing.JMenuBar
+import javax.swing.JMenuItem
+import javax.swing.JPanel
+import javax.swing.JSlider
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 
@@ -62,8 +69,8 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
         val operationsMenuBar = JMenuBar()
         val fileMenu = JMenu("File")
         operationsMenuBar.add(fileMenu)
-        val saveMenuItem = JMenuItem("Save Image")
         val loadMenuItem = JMenuItem("Load Image")
+        val saveMenuItem = JMenuItem("Save Image")
         fileMenu.add(saveMenuItem)
         fileMenu.add(loadMenuItem)
         jMenuBar = operationsMenuBar
@@ -72,16 +79,28 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
         repaint()
     }
 
-    class HandleSliderChange: ChangeListener {
+    inner class HandleSliderChange: ChangeListener
+    {
 
         override fun stateChanged(p0: ChangeEvent?)
         {
             val source = p0?.source
             if (source is JSlider)
             {
-                System.err.println(source.value)
+                if (source == thresholdOneSlider)
+                {
+                    thresholdOneValue = source.value
+                }
+                else if (source == thresholdTwoSlider)
+                {
+                    thresholdTwoValue = source.value
+                }
+                else
+                {
+                    //TODO get a logger and log that a Jslider has been called that doesn't exist
+                }
             }
+            System.err.println("Value 1: $thresholdOneValue Value 2: $thresholdTwoValue")
         }
-
     }
 }
