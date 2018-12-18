@@ -1,15 +1,17 @@
 package ui
 
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.GridLayout
 import javax.swing.*
-import javax.swing.border.Border
 
 /**
  *
  */
 class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
                    private val thresholdTwoSlider: JSlider = JSlider(),
-                   private val comboBox: JComboBox<String> = JComboBox(),
+                   private val kernelComboBox: JComboBox<Int> = JComboBox(arrayOf(3, 9)),
                    private var thresholdOneValue: Int = 50,
                    private var thresholdTwoValue: Int = 150,
                    private var kernelSize: Int = 3) : JFrame() {
@@ -25,20 +27,22 @@ class DisplayFrame(private val thresholdOneSlider: JSlider = JSlider(),
         val adjustmentPanelSize = Dimension(100, 500)
 
         // Set up the adjustment panel
-        val adjustmentPanel = JPanel(GridLayout(2, 2))
+        val adjustmentPanel = JPanel(GridLayout(2, 3, 5, 5))
         topLevelPanel.add(adjustmentPanel, BorderLayout.NORTH)
-        adjustmentPanel.size = adjustmentPanelSize
         adjustmentPanel.background = Color.YELLOW
-        adjustmentPanel.add(JLabel("Threshold Slider 2", JLabel.CENTER))
+
         adjustmentPanel.add(JLabel("Threshold Slider 1", JLabel.CENTER))
+        adjustmentPanel.add(JLabel("Kernel Size", JLabel.CENTER))
+        adjustmentPanel.add(JLabel("Threshold Slider 2", JLabel.CENTER))
+
         adjustmentPanel.add(thresholdOneSlider)
+        adjustmentPanel.add(kernelComboBox)
         adjustmentPanel.add(thresholdTwoSlider)
 
         // Set up the display panel
-//        val displayPanel = JPanel()
-//        displayPanel.size = displayPanelSize;
-//        topLevelPanel.add(displayPanel, BorderLayout.SOUTH)
-//        displayPanel.background = Color.BLUE
+        val displayPanel = JPanel()
+        topLevelPanel.add(displayPanel, BorderLayout.CENTER)
+        displayPanel.background = Color.BLUE
 
         // Set up the frame
         size = frameSize
