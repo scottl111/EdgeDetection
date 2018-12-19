@@ -3,6 +3,7 @@ package edgeDetectionAlgorithm
 import ui.DisplayImage
 import java.awt.Color
 import java.awt.image.BufferedImage
+import java.awt.image.ColorConvertOp
 
 class EdgeDetectionOperator {
 
@@ -31,6 +32,7 @@ class EdgeDetectionOperator {
 
     fun applyGreyScale()
     {
+        //TODO this is bad for performance - it can be done better by using filters, or openCV
         val img = DisplayImage.instance ?: return
 
         for (y in 0..(img.height -1))
@@ -38,17 +40,18 @@ class EdgeDetectionOperator {
             for (x in 0..(img.width - 1))
             {
                 val currentPixelColour = Color(img.getRGB(x, y))
-                val red = (currentPixelColour.red * 0.299).toInt()
-                val green = (currentPixelColour.green * 0.587).toInt()
-                val blue = (currentPixelColour.blue * 0.114).toInt()
 
-                val total = red+green+blue
-                val greyScaleColourPixel = Color(total)
+                val red = currentPixelColour.red
+                val green = currentPixelColour.green
+                val blue = currentPixelColour.blue
 
-                img.setRGB(x, y, greyScaleColourPixel.rgb);
+                val average: Int = (red + green + blue) / 3
+
+                img.setRGB(x, y, Color(average, average, average).rgb);
             }
         }
 
         DisplayImage.instance = img
     }
+
 }
