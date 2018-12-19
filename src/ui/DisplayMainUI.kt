@@ -1,12 +1,11 @@
 package ui
 
+import edgeDetectionAlgorithm.EdgeDetectionOperator
 import utility.ImageUtils
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.GridLayout
+import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -21,13 +20,13 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     private var thresholdTwoValue: Int = 150,
                     private var kernelSize: Int = 3,
                     private val topLevelPanel: JPanel = JPanel(BorderLayout()),
-                    private val displayPanel: JPanel = JPanel()) : JFrame() {
+                    private val edgeDetectionOperator: EdgeDetectionOperator = EdgeDetectionOperator(),
+                    private val displayPanel: JPanel = JPanel()) : JFrame(){
 
     init
     {
         createUI()
-        validate()
-        repaint()
+        updateUI()
     }
 
     private fun createUI()
@@ -42,7 +41,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
     {
         val adjustmentPanel = JPanel(GridLayout(2, 3, 5, 5))
         topLevelPanel.add(adjustmentPanel, BorderLayout.NORTH)
-        adjustmentPanel.background = Color.YELLOW
+        adjustmentPanel.background = Color.lightGray
 
         thresholdOneSlider.addChangeListener(HandleSliderChange())
         thresholdTwoSlider.addChangeListener(HandleSliderChange())
@@ -59,15 +58,16 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
     private fun createImageDisplayPanel()
     {
-        displayPanel.background = Color.BLUE
+        displayPanel.background = Color.lightGray
         topLevelPanel.add(displayPanel, BorderLayout.CENTER)
     }
 
-    private fun setMainImage(fileOfImage: File)
+    private fun setDisplayImage(fileOfImage: File)
     {
         val img = ImageIO.read(fileOfImage)
         displayPanel.removeAll()
-        displayPanel.add(ImageUtils.getImageFromFile(img))
+        DisplayImage.instance = img
+        displayPanel.add(JLabel(ImageIcon(DisplayImage.instance)))
     }
 
     private fun createFrame(frameTitle: String = "Edge Detection")
@@ -80,12 +80,12 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
         val operationsMenuBar = JMenuBar()
         val fileMenu = JMenu("File")
         operationsMenuBar.add(fileMenu)
-        val loadMenuItem = JMenuItem("Load Image")
-        val saveMenuItem = JMenuItem("Save Image")
+        val loadMenuItem = JMenuItem(FileEnum.LOAD.display)
+        val saveMenuItem = JMenuItem(FileEnum.SAVE.display)
         fileMenu.add(loadMenuItem)
         fileMenu.add(saveMenuItem)
-        loadMenuItem.addActionListener(HandleMenuChange(topLevelPanel))
-        saveMenuItem.addActionListener(HandleMenuChange(topLevelPanel))
+        loadMenuItem.addActionListener(HandleMenuChange())
+        saveMenuItem.addActionListener(HandleMenuChange())
         jMenuBar = operationsMenuBar
     }
 
@@ -123,39 +123,59 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
         }
     }
 
-    inner class HandleMenuChange(val panel: JPanel): ActionListener
+    inner class HandleMenuChange: ActionListener
     {
         private val defaultFileLocation = """C:\git\EdgeDetection\trainingData"""
 
         override fun actionPerformed(p0: ActionEvent?)
         {
-            if (p0?.actionCommand.equals("Load Image"))
-            {
-                System.err.println("Lets choose a file!")
-                //Create a file chooser
-                val fileChooser = JFileChooser();
-                fileChooser.currentDirectory = File(defaultFileLocation)
-                val returnVal = fileChooser.showOpenDialog(parent)
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    System.out.println("You chose to open this file: " + fileChooser.selectedFile.absoluteFile)
-                }
-                setMainImage(fileChooser.selectedFile.absoluteFile)
-                revalidate()
-                repaint()
-            }
-            else if (p0?.actionCommand.equals("Save Image"))
-            {
+            when {
+                FileEnum.LOAD.display == p0?.actionCommand ->
+                {
+                    //Create a file chooser
+                    val fileChooser = JFileChooser();
+                    fileChooser.currentDirectory = File(defaultFileLocation)
+                    val returnVal = fileChooser.showOpenDialog(parent)
 
-            }
-            else
-            {
-                //TODO LOGGER
+                    var fileToOpenPath: File? = null
+                    if (returnVal == JFileChooser.APPROVE_OPTION)
+                    {
+                        fileToOpenPath = fileChooser.selectedFile?.absoluteFile
+                    }
+
+                    if (ImageUtils.validateFileAsImage(fileToOpenPath))
+                    {
+                        setDisplayImage(fileToOpenPath!!)
+                    }
+
+                    updateUI()
+                }
+
+                FileEnum.SAVE.display == (p0?.actionCommand) ->
+                {
+                    edgeDetectionOperator.applyEdgeDetection()
+                    System.err.println("")
+                }
+
+                else ->
+                {
+                    //TODO LOGGER
+                }
             }
         }
     }
 
-    companion object {
+    private fun updateUI()
+    {
+        revalidate()
+        repaint()
+    }
+
+    companion object
+    {
         const val frameHeight: Int = 500
         const val frameWidth: Int = 1000
     }
+
+
 }
