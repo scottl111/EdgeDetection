@@ -70,6 +70,12 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
         displayPanel.add(JLabel(ImageIcon(DisplayImage.instance)))
     }
 
+    private fun setDisplayImage()
+    {
+        displayPanel.removeAll()
+        displayPanel.add(JLabel(ImageIcon(DisplayImage.instance)))
+    }
+
     private fun createFrame(frameTitle: String = "Edge Detection")
     {
         size = Dimension(frameWidth, frameHeight)
@@ -153,8 +159,8 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
                 FileEnum.SAVE.display == (p0?.actionCommand) ->
                 {
-                    edgeDetectionOperator.applyEdgeDetection()
-                    System.err.println("")
+                    edgeDetectionOperator.applyGreyScale()
+                    updateUI()
                 }
 
                 else ->
