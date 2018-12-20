@@ -1,6 +1,7 @@
 package ui
 
 import edgeDetectionAlgorithm.EdgeDetectionOperator
+import org.opencv.imgcodecs.Imgcodecs
 import utility.ImageUtils
 import java.awt.*
 import java.awt.event.ActionEvent
@@ -11,6 +12,10 @@ import javax.swing.*
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 import javax.swing.JFileChooser
+import java.text.SimpleDateFormat
+import java.text.DateFormat
+import java.util.*
+
 
 class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     private val thresholdTwoSlider: JSlider = JSlider(),
@@ -109,6 +114,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     }
                 }
             }
+            edgeDetectionOperator.applyEdgeDetection(thresholdOneValue, thresholdTwoValue, kernelSize)
         }
     }
 
@@ -130,7 +136,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
     inner class HandleMenuChange: ActionListener
     {
-        private val defaultFileLocation = """C:\git\EdgeDetection\trainingData"""
+        private val defaultFileLocation = """C:\git\EdgeDetection\trainingData\"""
 
         override fun actionPerformed(p0: ActionEvent?)
         {
@@ -158,10 +164,17 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
                 FileEnum.SAVE.display == (p0?.actionCommand) ->
                 {
-                    edgeDetectionOperator.applyGreyScale()
-                    updateUI()
-                }
+                   //TODO save the image
+                    val df = SimpleDateFormat("dd-MM-yy_HH:mm:ss")
+                    val uuid = Date()
 
+                    val outputFile = File(defaultFileLocation + "written_out_" + df.format(uuid) + ".jpg")
+                    System.err.println(outputFile.absoluteFile)
+                    if (ImageIO.write(DisplayImage.instance, "jpg", outputFile.absoluteFile))
+                    {
+                        System.err.println("Successfully wrote out image..... ${outputFile.absoluteFile}")
+                    }
+                }
                 else ->
                 {
                     //TODO LOGGER
