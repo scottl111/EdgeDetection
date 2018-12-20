@@ -19,7 +19,7 @@ import java.util.*
 
 class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     private val thresholdTwoSlider: JSlider = JSlider(),
-                    private val kernelComboBox: JComboBox<Int> = JComboBox(arrayOf(3, 5, 9, 12)),
+                    private val kernelComboBox: JComboBox<Int> = JComboBox(arrayOf(3, 5, 7)),
                     private var thresholdOneValue: Int = 50,
                     private var thresholdTwoValue: Int = 150,
                     private var kernelSize: Int = 3,
