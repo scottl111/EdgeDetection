@@ -1,20 +1,20 @@
 package ui
 
 import edgeDetectionAlgorithm.EdgeDetectionOperator
-import org.opencv.imgcodecs.Imgcodecs
 import utility.ImageUtils
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
-import javax.swing.JFileChooser
-import java.text.SimpleDateFormat
-import java.text.DateFormat
-import java.util.*
 
 
 class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
@@ -74,12 +74,6 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
         displayPanel.add(JLabel(ImageIcon(DisplayImage.instance)))
     }
 
-    private fun setDisplayImage()
-    {
-        displayPanel.removeAll()
-        displayPanel.add(JLabel(ImageIcon(DisplayImage.instance)))
-    }
-
     private fun createFrame(frameTitle: String = "Edge Detection")
     {
         size = Dimension(frameWidth, frameHeight)
@@ -131,6 +125,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
             {
                 //TODO LOGGER something has gone wrong
             }
+            edgeDetectionOperator.applyEdgeDetection(thresholdOneValue, thresholdTwoValue, kernelSize)
         }
     }
 
@@ -158,17 +153,21 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     {
                         setDisplayImage(fileToOpenPath!!)
                     }
+                    else
+                    {
+                        // TODO Notification that the image has failed to read into the program.
+                    }
 
                     updateUI()
                 }
 
-                FileEnum.SAVE.display == (p0?.actionCommand) ->
+                FileEnum.SAVE.display == p0?.actionCommand ->
                 {
                    //TODO save the image
-                    val df = SimpleDateFormat("dd-MM-yy_HH:mm:ss")
+                    val df = SimpleDateFormat("dd-MM-yy_HH-mm-s")
                     val uuid = Date()
 
-                    val outputFile = File(defaultFileLocation + "written_out_" + df.format(uuid) + ".jpg")
+                    val outputFile = File(defaultFileLocation + "save_${df.format(uuid)}.jpg")
                     System.err.println(outputFile.absoluteFile)
                     if (ImageIO.write(DisplayImage.instance, "jpg", outputFile.absoluteFile))
                     {

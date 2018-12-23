@@ -8,10 +8,10 @@ import org.opencv.imgproc.Imgproc
 import ui.DisplayImage
 import java.awt.Color
 import java.awt.image.BufferedImage
-import java.awt.image.ColorConvertOp
 import java.awt.image.DataBufferByte
 
-class EdgeDetectionOperator {
+class EdgeDetectionOperator
+{
 
     fun applyEdgeDetection(thresholdOne: Int, thresholdTwo: Int, kernelSize: Int)
     {
@@ -24,16 +24,18 @@ class EdgeDetectionOperator {
         val grey = Mat()
         val draw = Mat()
         val wide = Mat()
+
         Imgproc.cvtColor(colourMat, grey, Imgproc.COLOR_BGR2GRAY)
-        Imgproc.Canny(grey, wide, thresholdOne.toDouble(), thresholdTwo.toDouble(), kernelSize, false)
+        Imgproc.Canny(grey, wide, 50.0 + thresholdOne, 150.0 + thresholdTwo, kernelSize, false)
         wide.convertTo(draw, CvType.CV_8U)
 
-        if (Imgcodecs.imwrite("""C:/git/EdgeDetection/trainingData/edgeDetection.jpg""", draw)){
+        if (Imgcodecs.imwrite("""C:/git/EdgeDetection/trainingData/DOGGY.jpg""", draw))
+        {
             System.err.println("Edge is detecting............")
         }
 
-        val edgeDetectedImage = convertMatrixToImage(grey)
-        DisplayImage.instance = edgeDetectedImage
+//       val edgeDetectedImage = convertMatrixToImage(draw)
+//       DisplayImage.instance = edgeDetectedImage
     }
 
     private fun convertMatrixToImage(matrix: Mat): BufferedImage {
