@@ -1,20 +1,23 @@
-import ui.DisplayMainUI
-import java.io.File
-import javax.swing.JFileChooser
+import ui.ApplicationFrame
 import javax.swing.SwingUtilities
 
+/**
+ * The main class of the application containing the main method.
+ *
+ * @author Scott Lockett
+ */
+class EdgeDetectionMain
+{
 
-
-class EdgeDetectionMain {
-
-    companion object {
+    companion object
+    {
 
         @JvmStatic
-        fun main(args: Array<String>) {
-            SwingUtilities.invokeLater {
-                val ui = DisplayMainUI()
+        fun main(args: Array<String>)
+        {
+            SwingUtilities.invokeLater{
+                val ui = ApplicationFrame()
             }
-
         }
     }
 

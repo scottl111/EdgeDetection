@@ -1,17 +1,21 @@
 package ui
 
 /**
- * TODO
+ * The enum for representing
+ *
+ * @author Scott Lockett
+ *
+ * @param display The string associated with the enum, for use on the UI.
  */
 enum class FileEnum(val display: String)
 {
     /**
-     * TODO
+     * Load enum
      */
     LOAD("Load Image"),
 
     /**
-     * TODO
+     * Save enum
      */
     SAVE("Save Image")
 }
