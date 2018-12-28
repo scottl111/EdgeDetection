@@ -1,24 +1,13 @@
 package edgeDetectionAlgorithm
 
-import jdk.nashorn.internal.runtime.ECMAErrors
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import ui.DisplayImage
-import java.awt.Color
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
-import org.opencv.core.CvType.channels
-import jdk.nashorn.internal.codegen.ObjectClassGenerator.pack
-import javax.swing.ImageIcon
-import javax.swing.JLabel
-import java.awt.FlowLayout
-import javax.swing.JFrame
-
-
-
 
 
 class EdgeDetectionOperator
@@ -29,7 +18,7 @@ class EdgeDetectionOperator
         //TODO whats the kotlin way of loading a library?. Shouldn't need to do this everytime.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
 
-        val img = DisplayImage.instance
+        val img = DisplayImage.originalImage
         if (img == null)
         {
             //TODO use logger here
@@ -53,7 +42,7 @@ class EdgeDetectionOperator
             System.err.println("Edge is detecting............")
         }
 
-        DisplayImage.instance = convertMatrixToImage(draw)
+        DisplayImage.edgeDetectedImage = convertMatrixToImage(draw)
     }
 
 
@@ -70,12 +59,6 @@ class EdgeDetectionOperator
         }
         out = BufferedImage(matrix.width(), matrix.height(), type)
         out.raster.setDataElements(0, 0, matrix.width(), matrix.height(), data)
-
-        val frame = JFrame()
-        frame.contentPane.layout = FlowLayout()
-        frame.contentPane.add(JLabel(ImageIcon(out)))
-        frame.pack()
-        frame.isVisible = true
 
         return out
     }

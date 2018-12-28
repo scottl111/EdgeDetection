@@ -8,6 +8,7 @@ import java.awt.Dimension
 import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import java.awt.image.BufferedImage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -68,24 +69,21 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
     private fun setDisplayImage(fileOfImage: File? = null)
     {
-        val img = if (fileOfImage != null)
+        val theImageToDisplay: BufferedImage?
+        if (fileOfImage != null)
         {
-            ImageIO.read(fileOfImage)
+            val readImage = ImageIO.read(fileOfImage)
+            DisplayImage.originalImage = readImage
+            theImageToDisplay = readImage
         }
         else
         {
-            DisplayImage.instance
-        }
-
-        if (img == DisplayImage.instance){
-            System.err.println("Yeah they're the same. its all fine")
-        } else {
-            System.err.println("Nope no the same")
+            theImageToDisplay = DisplayImage.edgeDetectedImage
         }
 
         displayPanel.removeAll()
-        DisplayImage.instance = img;
-        displayPanel.add(JLabel(ImageIcon(img)))
+        displayPanel.add(JLabel(ImageIcon(theImageToDisplay)))
+        updateUI()
     }
 
     private fun createFrame(frameTitle: String = "Edge Detection")
@@ -124,7 +122,6 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
             }
             edgeDetectionOperator.applyEdgeDetection(thresholdOneValue, thresholdTwoValue, kernelSize)
             setDisplayImage()
-            updateUI()
         }
     }
 
@@ -143,7 +140,6 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
             }
             edgeDetectionOperator.applyEdgeDetection(thresholdOneValue, thresholdTwoValue, kernelSize)
             setDisplayImage()
-            updateUI()
         }
     }
 
@@ -188,7 +184,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
 
                     val outputFile = File(defaultFileLocation + "save_${df.format(uuid)}.jpg")
                     System.err.println(outputFile.absoluteFile)
-                    if (ImageIO.write(DisplayImage.instance, "jpg", outputFile.absoluteFile))
+                    if (ImageIO.write(DisplayImage.edgeDetectedImage, "jpg", outputFile.absoluteFile))
                     {
                         System.err.println("Successfully wrote out image..... ${outputFile.absoluteFile}")
                     }

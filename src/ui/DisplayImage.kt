@@ -8,4 +8,8 @@ import java.awt.image.BufferedImage
 object DisplayImage
 {
     var instance: BufferedImage? = null
+
+    var originalImage: BufferedImage? = null
+
+    var edgeDetectedImage: BufferedImage? = null
 }
