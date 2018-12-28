@@ -23,8 +23,9 @@ object ImageUtils
     {
         return when
         {
-            // NOTE there's more and better validation that should be done here such as the mime type. Maybe look at
-            // using Apache Tika https://tika.apache.org/
+            // NOTE there's more and better validation that should be done here such as the mime type.
+            // This method doesn't take into account the actual file format.
+            // Maybe look at using Apache Tika https://tika.apache.org/
             fileToValidate == null -> false
             !fileToValidate.canRead() -> false
             Files.isSymbolicLink(fileToValidate.toPath()) -> false
