@@ -1,20 +1,39 @@
 package utility
 
-//import org.opencv.core.Mat
 import org.opencv.core.Mat
-import java.awt.BorderLayout
 import java.awt.image.BufferedImage
-import javax.swing.ImageIcon
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JPanel
 import java.awt.image.DataBufferByte
 import java.io.File
+import java.nio.file.Files
+import javax.swing.ImageIcon
+import javax.swing.JLabel
 
 /**
  * Utility class for image manipulation
  */
 object ImageUtils{
+
+     fun matToBufferedImage(original: Mat): BufferedImage {
+        // init
+        val width = original.width()
+        val height = original.height()
+        val channels = original.channels()
+        val sourcePixels = ByteArray(width * height * channels)
+        original.get(0, 0, sourcePixels)
+
+         val image: BufferedImage = if (original.channels() > 1)
+         {
+             BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR)
+         }
+         else
+         {
+             BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
+         }
+        val targetPixels = (image.raster.dataBuffer as DataBufferByte).data
+        System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.size)
+
+        return image
+    }
 
     /**
      * Converts a BufferedImage into an open CV matrix object. Modified from
@@ -99,7 +118,14 @@ object ImageUtils{
 
     fun validateFileAsImage(fileToValidate: File?): Boolean
     {
-        return true // TODO for now. You can go through validating the image later. Note that it could be null.
+        return when
+        {
+            // NOTE there's more and better validation that should be done here
+            fileToValidate == null -> false
+            !fileToValidate.canRead() -> false
+            Files.isSymbolicLink(fileToValidate.toPath()) -> false
+            else -> true
+        }
     }
 
 }

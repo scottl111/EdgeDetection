@@ -1,5 +1,6 @@
 package edgeDetectionAlgorithm
 
+import jdk.nashorn.internal.runtime.ECMAErrors
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -9,15 +10,32 @@ import ui.DisplayImage
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
+import org.opencv.core.CvType.channels
+import jdk.nashorn.internal.codegen.ObjectClassGenerator.pack
+import javax.swing.ImageIcon
+import javax.swing.JLabel
+import java.awt.FlowLayout
+import javax.swing.JFrame
+
+
+
+
 
 class EdgeDetectionOperator
 {
 
     fun applyEdgeDetection(thresholdOne: Int, thresholdTwo: Int, kernelSize: Int)
     {
+        //TODO whats the kotlin way of loading a library?. Shouldn't need to do this everytime.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
 
-        val img = DisplayImage.instance ?: return
+        val img = DisplayImage.instance
+        if (img == null)
+        {
+            //TODO use logger here
+            System.err.println("Tried to apply edge detection but the display image is null so returning")
+            return
+        }
         System.err.println("first: $thresholdOne second: $thresholdTwo kernel: $kernelSize")
 
         val colourMat = convertImageToMatrix(img)
@@ -29,51 +47,37 @@ class EdgeDetectionOperator
         Imgproc.Canny(grey, wide, 50.0 + thresholdOne, 150.0 + thresholdTwo, kernelSize, false)
         wide.convertTo(draw, CvType.CV_8U)
 
-        if (Imgcodecs.imwrite("""C:/git/EdgeDetection/trainingData/DOGGY.jpg""", draw))
+        val path = """C:/git/EdgeDetection/trainingData/DOGGY.jpg"""
+        if (Imgcodecs.imwrite(path, draw))
         {
             System.err.println("Edge is detecting............")
         }
 
-//       val edgeDetectedImage = convertMatrixToImage(draw)
-//       DisplayImage.instance = edgeDetectedImage
+        DisplayImage.instance = convertMatrixToImage(draw)
     }
 
+
     private fun convertMatrixToImage(matrix: Mat): BufferedImage {
-        /*
-		 * Set the size of the image buffer to be the matrix's size
-		 */
-        val bufferSize = matrix.width() * matrix.height() * matrix.channels()
+        val out: BufferedImage
+        val data = ByteArray(matrix.height() * matrix.width() * matrix.channels())
+        System.err.println("mat height: ${matrix.height()} mat width: ${matrix.width()} channels: ${matrix.channels()}")
+        val type: Int
+        matrix.get(0, 0, data)
+        if (matrix.channels() == 1) {
+            type = BufferedImage.TYPE_BYTE_GRAY
+        } else {
+            type = BufferedImage.TYPE_3BYTE_BGR
+        }
+        out = BufferedImage(matrix.width(), matrix.height(), type)
+        out.raster.setDataElements(0, 0, matrix.width(), matrix.height(), data)
 
-        /*
-		 * Create the byte array the size of the buffer
-		 */
-        val b = ByteArray(bufferSize)
+        val frame = JFrame()
+        frame.contentPane.layout = FlowLayout()
+        frame.contentPane.add(JLabel(ImageIcon(out)))
+        frame.pack()
+        frame.isVisible = true
 
-        /*
-		 * Get all of the pixel from the matrix starting from position [0,0] and
-		 * write them to the byte array b.
-		 */
-        matrix.get(0, 0, b)
-
-        /*
-		 * Create the new image the size of the matrix
-		 */
-        val image = BufferedImage(matrix.width(), matrix.height(), BufferedImage.TYPE_3BYTE_BGR)
-
-        /*
-		 * get the target pixels from the image as a byte array
-		 */
-        val targetPixels = (image.raster.dataBuffer as DataBufferByte).data
-
-        /*
-		 * Copy the matrix values from b into the buffered image's target pixels
-		 */
-        System.arraycopy(b, 0, targetPixels, 0, b.size)
-
-        /*
-		 * once set return the buffered image
-		 */
-        return image
+        return out
     }
 
     private fun convertImageToMatrix(img: BufferedImage): Mat
@@ -84,29 +88,4 @@ class EdgeDetectionOperator
         m.put(0, 0, pixels)
         return m
     }
-
-    fun applyGreyScale()
-    {
-        //TODO this is bad for performance - it can be done better by using filters, or openCV
-        val img = DisplayImage.instance ?: return
-
-        for (y in 0..(img.height -1))
-        {
-            for (x in 0..(img.width - 1))
-            {
-                val currentPixelColour = Color(img.getRGB(x, y))
-
-                val red = currentPixelColour.red
-                val green = currentPixelColour.green
-                val blue = currentPixelColour.blue
-
-                val average: Int = (red + green + blue) / 3
-
-                img.setRGB(x, y, Color(average, average, average).rgb);
-            }
-        }
-
-        DisplayImage.instance = img
-    }
-
 }

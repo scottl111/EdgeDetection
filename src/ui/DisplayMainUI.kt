@@ -66,12 +66,26 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
         topLevelPanel.add(displayPanel, BorderLayout.CENTER)
     }
 
-    private fun setDisplayImage(fileOfImage: File)
+    private fun setDisplayImage(fileOfImage: File? = null)
     {
-        val img = ImageIO.read(fileOfImage)
+        val img = if (fileOfImage != null)
+        {
+            ImageIO.read(fileOfImage)
+        }
+        else
+        {
+            DisplayImage.instance
+        }
+
+        if (img == DisplayImage.instance){
+            System.err.println("Yeah they're the same. its all fine")
+        } else {
+            System.err.println("Nope no the same")
+        }
+
         displayPanel.removeAll()
-        DisplayImage.instance = img
-        displayPanel.add(JLabel(ImageIcon(DisplayImage.instance)))
+        DisplayImage.instance = img;
+        displayPanel.add(JLabel(ImageIcon(img)))
     }
 
     private fun createFrame(frameTitle: String = "Edge Detection")
@@ -109,6 +123,8 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                 }
             }
             edgeDetectionOperator.applyEdgeDetection(thresholdOneValue, thresholdTwoValue, kernelSize)
+            setDisplayImage()
+            updateUI()
         }
     }
 
@@ -126,6 +142,8 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                 //TODO LOGGER something has gone wrong
             }
             edgeDetectionOperator.applyEdgeDetection(thresholdOneValue, thresholdTwoValue, kernelSize)
+            setDisplayImage()
+            updateUI()
         }
     }
 
@@ -156,6 +174,7 @@ class DisplayMainUI(private val thresholdOneSlider: JSlider = JSlider(),
                     else
                     {
                         // TODO Notification that the image has failed to read into the program.
+                        System.err.println("Failed to read the image $fileToOpenPath")
                     }
 
                     updateUI()
