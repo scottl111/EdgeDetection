@@ -1,9 +1,10 @@
-package ui
+package main.kotlin.ui
 
 import java.awt.image.BufferedImage
 
 /**
  * Singleton kotlin object so we have 1 reference to the original unaltered image and 1 to the edge detection image.
+ * NOTE - it might be more appropriate to have this as a resource bundle as opposed to a static format.
  *
  * @author Scott Lockett
  */

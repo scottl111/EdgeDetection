@@ -1,4 +1,6 @@
-import ui.ApplicationFrame
+package main.kotlin
+
+import main.kotlin.ui.ApplicationFrame
 import javax.swing.SwingUtilities
 
 /**

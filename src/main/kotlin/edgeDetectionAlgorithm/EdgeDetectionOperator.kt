@@ -1,10 +1,10 @@
-package edgeDetectionAlgorithm
+package main.kotlin.edgeDetectionAlgorithm
 
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
-import ui.DisplayImage
+import main.kotlin.ui.DisplayImage
 import utility.ImageUtils
 
 /**
@@ -16,7 +16,7 @@ class EdgeDetectionOperator
 {
 
     /**
-     * Applies edge detection to the image loaded on the screen image.
+     * Applies grey scale edge detection to the image loaded on the screen image.
      */
     fun applyEdgeDetection(thresholdOne: Int, thresholdTwo: Int, kernelSize: Int)
     {

@@ -1,4 +1,4 @@
-package ui
+package main.kotlin.ui
 
 /**
  * The enum for representing

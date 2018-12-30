@@ -1,7 +1,7 @@
-package ui
+package main.kotlin.ui
 
-import edgeDetectionAlgorithm.EdgeDetectionOperator
-import utility.ImageUtils
+import main.kotlin.edgeDetectionAlgorithm.EdgeDetectionOperator
+import main.kotlin.utility.ImageUtilities
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -148,6 +148,12 @@ class ApplicationFrame(private val thresholdOneSlider: JSlider = JSlider(),
          */
         override fun stateChanged(p0: ChangeEvent?)
         {
+            // If we don't have an image, then just return.
+            if (DisplayImage.originalImage == null)
+            {
+                return
+            }
+
             val source = p0?.source
             if (source is JSlider)
             {
@@ -178,6 +184,12 @@ class ApplicationFrame(private val thresholdOneSlider: JSlider = JSlider(),
          */
         override fun actionPerformed(p0: ActionEvent?)
         {
+            // If we don't have an image, then just return.
+            if (DisplayImage.originalImage == null)
+            {
+                return
+            }
+
             val source = p0?.source
             if (source is JComboBox<*> && source.selectedItem is Int)
             {
@@ -228,7 +240,7 @@ class ApplicationFrame(private val thresholdOneSlider: JSlider = JSlider(),
                     }
 
                     // Make sure that the file is a real image file and if so, set it on the UI.
-                    if (ImageUtils.validateFileAsImage(fileToOpenPath))
+                    if (ImageUtilities.validateFileAsImage(fileToOpenPath))
                     {
                         setDisplayImage(fileToOpenPath!!)
                     }

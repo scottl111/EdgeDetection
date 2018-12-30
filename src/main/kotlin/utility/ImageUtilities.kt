@@ -1,4 +1,4 @@
-package utility
+package main.kotlin.utility
 
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -6,11 +6,12 @@ import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
 import java.io.File
 import java.nio.file.Files
+import javax.imageio.ImageIO
 
 /**
  * Utility class for image manipulation
  */
-object ImageUtils
+object ImageUtilities
 {
 
     /**
@@ -21,14 +22,22 @@ object ImageUtils
      */
     fun validateFileAsImage(fileToValidate: File?): Boolean
     {
+        // Creates an input stream of the file in order to validate the file format readers.
+        val imageStream = ImageIO.createImageInputStream(fileToValidate)
+        val fileFormatIterator = ImageIO.getImageReaders(imageStream)
+
         return when
         {
-            // NOTE there's more and better validation that should be done here such as the mime type.
-            // This method doesn't take into account the actual file format.
+            // TODO there's more and better validation that should be done here such as the mime type.
+            // This method doesn't take into account the 'actual' file format.
             // Maybe look at using Apache Tika https://tika.apache.org/
+
             fileToValidate == null -> false
             !fileToValidate.canRead() -> false
             Files.isSymbolicLink(fileToValidate.toPath()) -> false
+            // Ughhh - This is an awful way of testing file types but will do for now.
+            // NOTE This method will NOT support TIFF imagery. TIFF imagery can be supported using JAI at a later point.
+            !fileFormatIterator.hasNext() -> false
             else -> true
         }
     }
